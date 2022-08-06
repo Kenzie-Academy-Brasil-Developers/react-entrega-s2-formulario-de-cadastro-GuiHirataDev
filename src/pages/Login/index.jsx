@@ -2,9 +2,11 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Link } from "react-router-dom"
 import { AiFillEye } from "react-icons/ai"
-import { ApiLogin } from "../../services/Api"
 import { formLoginSchema } from "../../services/Schema"
 import { toast } from "react-toastify"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import { MainContent } from "./style"
 
 const Login = () => {
 
@@ -12,12 +14,41 @@ const Login = () => {
         resolver: yupResolver(formLoginSchema)
     })
 
+    const toastSucessLogin = () => {
+        toast.success("Login realizado com sucesso")
+    }
+
+    const toastErrorLogin = () => {
+        toast.error("Não foi possivel realizar o Login")
+    }
+
+    const navigate = useNavigate()
+
     const onSubmit = (data) => {
-        ApiLogin(data)
+        const urlLogin = "https://kenziehub.herokuapp.com/sessions"
+
+        axios.post(urlLogin, data)
+        .then(res => {
+        window.localStorage.setItem("@TOKEN", res.data.token)
+        window.localStorage.setItem("@USERID", res.data.user.id)
+        setTimeout(navigate, 1500, "/dashboard")
+        })
+        .then(toastSucessLogin)
+        .catch(toastErrorLogin)
+
+    }
+    
+    const showPassword = () => {
+        const input = document.getElementById("pass")
+        input.type = "text"
+    }
+
+    const redirectRegister = () => {
+        navigate("/register")
     }
 
     return(
-        <main>
+        <MainContent>
             <h2>Kenzie Hub</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <h3>Login</h3>
@@ -30,32 +61,35 @@ const Login = () => {
                     />
                     <p>{errors.email?.message}</p>
                 </label>
-                <label>
+                <label className="labelButton">
                     Senha
-                    <input 
-                        type="text" 
-                        placeholder="********"
-                        {...register("password")}
-                    />
+                    <span>
+                        <input 
+                            id="pass"
+                            type="password" 
+                            placeholder="********"
+                            {...register("password")}
+                        />
+                        <button onClick={showPassword}
+                        className="eyeButton"
+                        >
+                            <AiFillEye/>
+                        </button>
+                    </span>
                     <p>{errors.password?.message}</p>
-                    <button>
-                        <AiFillEye/>
-                    </button>
                 </label>
-                <button type="submit">Entrar</button>
-                <Link to="/register">Ainda não possui uma conta?</Link>
-                <button>Cadastre-se</button>
+                <button 
+                    type="submit"
+                    className="entryButton"
+                >Entrar
+                </button>
+                <Link to="/register" className="link">Ainda não possui uma conta?</Link>
+                <button onClick={redirectRegister} className="registerButton">Cadastre-se</button>
             </form>
-        </main>
+        </MainContent>
     )
 }
 
 export default Login
 
-export const toastSucessLogin = () => {
-    toast.success("Login realizado com sucesso")
-}
 
-export const toastErrorLogin = () => {
-    toast.error("Não foi possivel realizar o Login")
-}

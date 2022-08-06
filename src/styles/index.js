@@ -1,6 +1,8 @@
 import { createGlobalStyle } from "styled-components";
+import Inter from "./fonts";
 
 const GlobalStyles = createGlobalStyle`
+    ${Inter}
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
     a, abbr, acronym, address, big, cite, code,
@@ -27,6 +29,7 @@ const GlobalStyles = createGlobalStyle`
     }
     body {
         line-height: 1;
+        font-family: Inter, sans-serif;
     }
     ol, ul {
         list-style: none;
@@ -43,6 +46,8 @@ const GlobalStyles = createGlobalStyle`
         border-collapse: collapse;
         border-spacing: 0;
     }
+
+
 `
 
 export default GlobalStyles
