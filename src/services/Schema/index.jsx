@@ -28,3 +28,8 @@ export const formRegisterSchema = yup.object().shape({
         .string()
         .required("Forma de contato obrigatória"),
 })
+
+export const formDashSchema = yup.object().shape({
+    technologie: yup
+        .string()
+})
