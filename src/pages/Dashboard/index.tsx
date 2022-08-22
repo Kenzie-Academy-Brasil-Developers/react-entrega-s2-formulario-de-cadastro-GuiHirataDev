@@ -15,7 +15,7 @@ const Dashboard = () => {
     deleteTech,
   } = useContext(TechContext);
 
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState<boolean>(false);
 
   const openModal = () => {
     setModal(true);
@@ -38,18 +38,18 @@ const Dashboard = () => {
       </header>
       <UserContent>
         <section className="userBar">
-          <h3>Olá, {user.name}</h3>
-          <p>{user.course_module}</p>
+          <h3>Olá, {user?.name}</h3>
+          <p>{user?.course_module}</p>
         </section>
         <section className="technologies">
           <div className="headerTechnologies">
             <h3>Tecnologias</h3>
             <button onClick={openModal}>+</button>
           </div>
-          {user.techs.lenght !== 0 && (
+          {user?.techs.length !== 0 && (
             <TechContainer>
               <ul>
-                {user.techs.map((tech) => {
+                {user?.techs.map((tech) => {
                   return (
                     <li key={tech.id}>
                       <h3>{tech.title}</h3>

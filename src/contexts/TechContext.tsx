@@ -1,13 +1,32 @@
-import { createContext } from "react";
+import { createContext, ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formDashSchema } from "../services/Schema";
 import api from "../services/Api";
 import { toast } from "react-toastify";
 
-export const TechContext = createContext({});
+export interface TechProps {
+  children: ReactNode;
+}
 
-const TechProvider = ({ children }) => {
+export interface TechData {
+  id: string;
+  title: string;
+  status: string;
+}
+
+interface TechProviderData {
+  registerDash: any;
+  handleSubmitDash: any;
+  errorsDash: any;
+  onSubmitDash: (data: TechData) => void;
+  deleteTech: (techId: string) => void;
+}
+
+export const TechContext = createContext<TechProviderData>({} as TechProviderData);
+
+const TechProvider = ({ children }: TechProps) => {
+
   const {
     register: registerDash,
     handleSubmit: handleSubmitDash,
@@ -26,11 +45,11 @@ const TechProvider = ({ children }) => {
     toast.success("Tecnologia excluída com sucesso");
   };
 
-  const onSubmitDash = (data) => {
+  const onSubmitDash = (data: TechData) => {
     api.post("/users/techs", data).then(toastSucessDash).catch(toastErrorDash);
   };
 
-  const deleteTech = (techId) => {
+  const deleteTech = (techId: string) => {
     api.delete(`/users/techs/${techId}`).then(toastSucessDeleteDash);
   };
 

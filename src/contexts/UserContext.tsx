@@ -1,17 +1,79 @@
 import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavigateFunction } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { formLoginSchema, formRegisterSchema } from "../services/Schema";
 import { toast } from "react-toastify";
 import api from "../services/Api";
+import { TechProps, TechData } from "./TechContext";
 
-export const UserContext = createContext({});
 
-const UserProvider = ({ children }) => {
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  course_module: string;
+  bio: string;
+  contact: string;
+  techs: TechData[];
+  works?: string[];
+  created_at: string;
+  updated_at: string;
+  avatar_url: string;
+}
+
+interface DataLogin {
+  email: string;
+  password: string;
+}
+
+interface DataRegister {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  bio: string;
+  contact: string;
+  course_module: string;
+}
+
+interface UserProviderData {
+  register: any;
+  registerRegister: any;
+  handleSubmit: any;
+  handleSubmitRegister: any;
+  errors: any;
+  errorsRegister: any;
+  onSubmit: (data: DataLogin) => void;
+  onSubmitRegister: (data: DataRegister) => void;
+  navigate: NavigateFunction;
+  user: UserData | null;
+  loading: boolean;
+}
+
+interface AxiosData {
+    user: {
+      id: string,
+      name: string,
+      email: string,
+      course_module: string,
+      bio: string,
+      contact: string,
+      techs?: string[],
+      works?: string[],
+      created_at: string,
+      updated_at: string,
+      avatar_url: null
+    },
+    token: string;
+}
+
+export const UserContext = createContext<UserProviderData>({} as UserProviderData);
+
+const UserProvider = ({ children }: TechProps) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const {
     register,
@@ -41,9 +103,9 @@ const UserProvider = ({ children }) => {
     toast.error("Não foi possivel realizar o cadastro");
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: DataLogin) => {
     api
-      .post("/sessions", data)
+      .post<AxiosData>("/sessions", data)
       .then((res) => {
         window.localStorage.setItem("@TOKEN", res.data.token);
         window.localStorage.setItem("@USERID", res.data.user.id);
@@ -52,9 +114,9 @@ const UserProvider = ({ children }) => {
       .then(toastSucessLogin)
       .catch(toastErrorLogin);
   };
-  const onSubmitRegister = (data) => {
+  const onSubmitRegister = (data: DataRegister) => {
     api
-      .post("/users", data)
+      .post<AxiosData>("/users", data)
       .then((res) => {
         if (res.status === 201) {
           setTimeout(navigate, 1500, "/login");

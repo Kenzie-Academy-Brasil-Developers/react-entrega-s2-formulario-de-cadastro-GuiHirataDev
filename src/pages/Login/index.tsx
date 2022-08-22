@@ -7,13 +7,13 @@ import { UserContext } from "../../contexts/UserContext";
 const Login = () => {
   const { register, handleSubmit, errors, onSubmit, navigate } =
     useContext(UserContext);
-  const [typePassword, setTypePassword] = useState("password");
+  const [typePassword, setTypePassword] = useState<string>("password");
 
-  const showPassword = (e) => {
+  const showPassword = (e: any) => {
     e.preventDefault();
     setTypePassword("text");
   };
-  const hidePassword = (e) => {
+  const hidePassword = (e: any) => {
     e.preventDefault();
     setTypePassword("password");
   };

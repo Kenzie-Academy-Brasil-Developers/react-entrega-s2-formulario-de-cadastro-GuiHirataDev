@@ -14,11 +14,11 @@ const Register = () => {
 
   const [typePassword, setTypePassword] = useState("password");
 
-  const showPassword = (e) => {
+  const showPassword = (e: any) => {
     e.preventDefault();
     setTypePassword("text");
   };
-  const hidePassword = (e) => {
+  const hidePassword = (e: any) => {
     e.preventDefault();
     setTypePassword("password");
   };
